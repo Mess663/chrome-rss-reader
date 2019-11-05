@@ -1,0 +1,33 @@
+# Distribution directory
+dist
+
+# Dependency directories
+node_modules
+
+# Optional npm cache directory
+.npm
+
+# OS temps
+.DS_Store
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Optional REPL history
+.node_repl_history
+
+
+yarn.lock
+
+package-lock.json
+
+.idea
+
+# Editor configuration
+.vscode
+
+#官方构建文件
+project.config.json
+sitemap.json
