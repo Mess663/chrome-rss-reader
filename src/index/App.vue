@@ -39,6 +39,24 @@
 import RssParser from 'rss-parser';
 import xmlStrToJsonObj from 'src/utils/xml2Json';
 
+// function getCurrentTabId(callback) {
+//   chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
+//     if (callback) callback(tabs.length ? tabs[0].id : null);
+//   });
+// }
+
+// chrome.contextMenus.removeAll();
+// chrome.contextMenus.create({
+//   title: '批量获取评论',
+//   onclick() {
+//     getCurrentTabId(tabId => {
+//       chrome.tabs.connect(tabId, {
+//         name: 'test-connect'
+//       });
+//     });
+//   }
+// });
+
 const rssArticles = [];
 
 export default {

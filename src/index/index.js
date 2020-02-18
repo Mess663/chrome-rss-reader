@@ -1,5 +1,5 @@
 import './index.less';
-import 'normalize.css';
+// import 'normalize.css';
 
 import Vue from 'vue';
 import App from './App.vue';

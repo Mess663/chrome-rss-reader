@@ -9,6 +9,14 @@
 		"48": "./img/icon.png",
 		"128": "./img/icon.png"
 	},
+	"content_scripts": 
+    [
+        {
+            "matches": ["<all_urls>"],
+            "js": ["content.js"],
+            "run_at": "document_start"
+        }
+    ],
 	"background":
 	{
 		"page": "index.html"
@@ -28,6 +36,7 @@
 		"webRequestBlocking", 
 		"storage",
 		"http://*/*", 
-		"https://*/*" 
+		"https://*/*",
+		"contextMenus"
 	]
 }

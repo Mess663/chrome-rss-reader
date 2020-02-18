@@ -4,11 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "webpack --display-modules --sort-modules-by size",
-    "start": "webpack-dev-server --open",
-    "watch": "webpack --watch --progress",
+    "build": "ENV=production webpack --display-modules --sort-modules-by size",
+    "start": "ENV=development webpack-dev-server --open",
+    "watch": "ENV=development webpack --watch --progress",
     "analyze": "webpack --profile --json > stats.json & webpack-bundle-analyzer bundle/output/path/stats.json",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dll": "webpack --config webapck.dll.config.js"
   },
   "author": "",
   "license": "ISC",
@@ -16,6 +17,7 @@
     "@babel/core": "^7.6.4",
     "@babel/preset-env": "^7.6.3",
     "babel-loader": "^8.0.6",
+    "babel-preset-env": "^1.7.0",
     "clean-webpack-plugin": "^3.0.0",
     "copy-webpack-plugin": "^5.0.4",
     "css-loader": "^3.2.0",
@@ -24,11 +26,12 @@
     "eslint-config-prettier": "^6.5.0",
     "eslint-loader": "^3.0.2",
     "eslint-plugin-html": "^6.0.0",
-    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-import": "^2.20.1",
     "eslint-plugin-prettier": "^3.1.1",
     "eslint-plugin-vue": "^5.2.3",
     "file-loader": "^4.2.0",
     "happypack": "^5.0.1",
+    "hard-source-webpack-plugin": "^0.13.1",
     "html-webpack-plugin": "^3.2.0",
     "less-loader": "^5.0.0",
     "mini-css-extract-plugin": "^0.8.0",
@@ -44,12 +47,10 @@
     "webpack": "^4.41.0",
     "webpack-bundle-analyzer": "^3.5.2",
     "webpack-cli": "^3.3.9",
-    "webpack-dev-server": "^3.8.2"
+    "webpack-dev-server": "^3.8.2",
+    "less": "^3.10.3"
   },
   "dependencies": {
-    "express": "^4.17.1",
-    "global": "^4.4.0",
-    "less": "^3.10.3",
     "normalize.css": "^8.0.1",
     "rss-parser": "^3.7.2",
     "vue": "^2.6.10"

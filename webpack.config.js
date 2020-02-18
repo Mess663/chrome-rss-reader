@@ -2,28 +2,31 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const TerserPlugin = require('terser-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HappyPack = require('happypack');
+const webpack = require('webpack');
 const os = require('os');
+const VueLoaderPlugin = require('vue-loader/lib/plugin');
+const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 
 const happyThreadPool = HappyPack.ThreadPool({ size: os.cpus().length });
-const VueLoaderPlugin = require('vue-loader/lib/plugin');
-// const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+
+const { ENV } = process.env;
+const isPro = ENV === 'production';
 
 module.exports = {
   entry: {
     index: './src/index/index.js',
     popup: './src/popup/popup.js',
+    vender: ['vue', 'rss-parser'],
     hotReload: './src/hot-reload.js'
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
     publicPath: '/',
-    filename: 'js/[name].bundle.js'
+    filename: 'js/[name].[hash].js'
   },
-  mode: 'development',
-  devtool: 'source-map',
+  mode: ENV,
+  devtool: isPro ? 'source-map' : 'cheap-module-eval-source-map',
 
   resolve: {
     alias: {
@@ -32,15 +35,23 @@ module.exports = {
     }
   },
 
+  optimization: {
+    splitChunks: {
+      chunks: 'all'
+    }
+  },
+
   module: {
     rules: [
       {
         test: /\.vue$/,
-        use: 'vue-loader'
+        use: ['vue-loader'],
+        exclude: /node_modules/
       },
       {
-        test: /\.css$/,
-        use: ['vue-style-loader', 'css-loader']
+        test: /\.js$/,
+        use: ['happypack/loader?id=happyBabel'],
+        exclude: /node_modules/
       },
       {
         // 图片格式正则
@@ -60,51 +71,25 @@ module.exports = {
         ]
       },
       {
-        test: /\.m?js$/,
-        exclude: /(node_modules|bower_components)/,
-        use: {
-          loader: 'babel-loader',
-          options: {
-            presets: ['@babel/preset-env']
-          }
-        }
-      },
-      {
         test: /\.less$/,
-        loader: ['style-loader', 'css-loader', 'less-loader']
-      },
-      {
-        test: /\.js$/,
-        // 把对.js 的文件处理交给id为happyBabel 的HappyPack 的实例执行
-        loader: 'happypack/loader?id=happyBabel',
-        // 排除node_modules 目录下的文件
-        exclude: /node_modules/
-      },
-      {
-        test: /\.(js|vue)$/,
-        loader: 'eslint-loader',
-        enforce: 'pre',
-        include: [path.join(__dirname, 'src')],
-        options: {
-          fix: true
-        }
+        loader: [
+          'vue-style-loader',
+          'style-loader',
+          { loader: 'css-loader', options: { sourceMap: true } },
+          { loader: 'less-loader', options: { sourceMap: true } }
+        ]
       }
+      // {
+      //   test: /\.(js|vue)$/,
+      //   loader: 'eslint-loader',
+      //   enforce: 'pre',
+      //   include: [path.join(__dirname, 'src')],
+      //   options: {
+      //     fix: true
+      //   }
+      // }
     ]
   },
-
-  // optimization: {
-  //   minimize: true,
-  //   minimizer: [new TerserPlugin({
-  //     terserOptions: {
-  //       compress: {
-  //         // drop_console: true,
-  //       },
-  //     },
-  //   })],
-  //   // splitChunks: {
-  //   //   chunks: 'all',
-  //   // },
-  // },
 
   plugins: [
     new VueLoaderPlugin(),
@@ -120,10 +105,6 @@ module.exports = {
         collapseWhitespace: true,
         removeScriptTypeAttributes: true,
         removeStyleLinkTypeAttributes: true
-      },
-      meta: {
-        'Content-Security-Policy':
-          "script-src 'self' 'unsafe-eval'; object-src 'self'"
       }
     }),
     new HtmlWebpackPlugin({
@@ -141,7 +122,8 @@ module.exports = {
     }),
     new CopyWebpackPlugin([
       { from: 'src/manifest.json', to: 'manifest.json', toType: 'file' },
-      { from: 'src/img', to: 'img', toType: 'dir' }
+      { from: 'src/img', to: 'img', toType: 'dir' },
+      { from: 'src/content.js', to: 'content.js', toType: 'file' }
     ]),
     new CleanWebpackPlugin({
       cleanStaleWebpackAssets: false // resolve conflict with `CopyWebpackPlugin`
@@ -152,23 +134,28 @@ module.exports = {
       // 如何处理  用法和loader 的配置一样
       loaders: [
         {
-          loader: 'babel-loader?cacheDirectory=true'
+          loader: 'babel-loader',
+          options: {
+            cacheDirectory: true,
+            presets: [
+              [
+                '@babel/preset-env',
+                {
+                  modules: false
+                }
+              ]
+            ]
+          }
         }
       ],
       // 共享进程池
       threadPool: happyThreadPool,
       // 允许 HappyPack 输出日志
       verbose: true
-    })
-
-    // new webpack.HotModuleReplacementPlugin(),
-
-    // new BundleAnalyzerPlugin()
-    // new WxMultiEntryPlugin()
-  ],
-
-  devServer: {
-    contentBase: './dist',
-    hot: true
-  }
+    }),
+    // 防止chunk id的频繁改变
+    new webpack.HashedModuleIdsPlugin(),
+    // 打包自动缓存
+    new HardSourceWebpackPlugin()
+  ]
 };

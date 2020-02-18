@@ -12,7 +12,8 @@ module.exports = {
     Atomics: 'readonly',
     SharedArrayBuffer: 'readonly',
     chrome: 'readonly',
-    ActiveXObject: 'readonly'
+    ActiveXObject: 'readonly',
+    ENV: 'readonly'
   },
   parserOptions: {
     ecmaVersion: 2018,
@@ -23,10 +24,7 @@ module.exports = {
     'html'
   ],
   rules: {
-    // "prettier/prettier": "error",
-    // allow async-await
     'generator-star-spacing': 'off',
-    // allow debugger during development
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'no-new':  0,
     'func-names': 0,
