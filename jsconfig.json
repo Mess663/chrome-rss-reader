@@ -1,18 +1,16 @@
 {
   "compilerOptions": {
+    "target": "es6",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "src/*": [
+        "./src/*"
+      ]
     },
-    "target": "ES6",
-    "module": "commonjs",
-    "allowSyntheticDefaultImports": true
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules"],
-  "paths": {
-    "src/*": [
-      "./src/*"
-    ]
-  }
+  "exclude": [
+    "node_modules",
+    "dist",
+    ".vscode"
+  ],
 }

@@ -1,5 +1,5 @@
 // chrome.runtime.onConnect.addListener(function(port) {
-//   // eslint-disable-next-line eqeqeq
+//   // eslint-disable-next-line 
 //   if (port.name == 'test-connect') {
 //     port.onMessage.addListener(function() {
 //       // eslint-disable-next-line prefer-spread

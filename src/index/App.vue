@@ -1,40 +1,3 @@
-<template>
-  <div class="page">
-    <div class="rss-origin-list">
-      <input id="file" type="file" value="引入yml" @input="bindInput" />
-
-      <a :href="fileUrl" :download="fileName">下载文件</a>
-
-      <div
-        class="info"
-        v-for="(item, index) in rssOriginList"
-        v-bind:key="index"
-        @click="() => bindRssClick(index)"
-      >
-        <img :src="item.icon" alt="" />
-        <div class="name">{{ item.title }}</div>
-      </div>
-    </div>
-
-    <div class="article-list">
-      <div
-        class="item"
-        v-for="(item, i) in articleList"
-        v-bind:key="i"
-        @click="() => bindArticleClick(item)"
-      >
-        <p class="title">{{ item.title }}</p>
-        <p class="desc">{{ item.contentSnippet }}</p>
-        <p class="time">{{ item.isoDate }}</p>
-      </div>
-    </div>
-
-    <div class="content-wrap">
-      <h3 class="title">{{ title }}</h3>
-      <article v-html="content" class="content"></article>
-    </div>
-  </div>
-</template>
 <script>
 import RssParser from 'rss-parser';
 import xmlStrToJsonObj from 'src/utils/xml2Json';
@@ -60,7 +23,7 @@ import xmlStrToJsonObj from 'src/utils/xml2Json';
 const rssArticles = [];
 
 export default {
-  name: 'index',
+  name: 'Index',
   data() {
     return {
       rssOriginList: [],
@@ -110,7 +73,7 @@ export default {
         });
 
         chrome.storage.sync.set({ rssOriginList: self.rssOriginList });
-        console.log(jsonObj.opml.body.outline);
+
         self.initOutputOpml();
       };
       reader.readAsText(file);
@@ -163,3 +126,42 @@ export default {
   }
 };
 </script>
+
+
+<template>
+  <div class="page">
+    <div class="rss-origin-list">
+      <input id="file" type="file" value="引入yml" @input="bindInput" />
+
+      <a :href="fileUrl" :download="fileName">下载文件</a>
+
+      <div
+        v-for="(item, index) in rssOriginList"
+        :key="index"
+        class="info"
+        @click="() => bindRssClick(index)"
+      >
+        <img :src="item.icon" alt="" />
+        <div class="name">{{ item.title }}</div>
+      </div>
+    </div>
+
+    <div class="article-list">
+      <div
+        v-for="(item, i) in articleList"
+        :key="i"
+        class="item"
+        @click="() => bindArticleClick(item)"
+      >
+        <p class="title">{{ item.title }}</p>
+        <p class="desc">{{ item.contentSnippet }}</p>
+        <p class="time">{{ item.isoDate }}</p>
+      </div>
+    </div>
+
+    <div class="content-wrap">
+      <h3 class="title">{{ title }}</h3>
+      <article class="content" v-html="content"></article>
+    </div>
+  </div>
+</template>

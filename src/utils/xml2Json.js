@@ -16,7 +16,6 @@ function xmlStrToXmlObj(xmlStr) {
     xmlObj = xmlDom;
   } else {
     xmlObj = new DOMParser().parseFromString(xmlStr.trim(), 'text/xml');
-    console.log(xmlObj);
   }
   return xmlObj;
 }
